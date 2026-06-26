@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ficha de Registro de Personal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #0f2c59; /* Azul Corporativo */
+      --secondary-color: #1a5f7a; /* Azul de Acento */
+      --bg-light: #f8f9fa;
+      --border-color: #ced4da;
+    }
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #333;
+    }
+    .form-container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e3e6ec;
+    }
+    /* Stepper UX */
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      position: relative;
+      padding: 0;
+      list-style: none;
+    }
+    .step-indicator::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--border-color);
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    .step-item { position: relative; z-index: 2; background-color: #fff; padding: 0 10px; }
+    .step-btn {
+      width: 40px; height: 40px; border-radius: 50%; background-color: #fff;
+      border: 2px solid var(--border-color); color: #6c757d; font-weight: bold;
+      display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
+    }
+    .step-item.active .step-btn {
+      border-color: var(--primary-color); background-color: var(--primary-color); color: #fff;
+      box-shadow: 0 0 0 4px rgba(15, 44, 89, 0.15);
+    }
+    .step-item.completed .step-btn { border-color: var(--secondary-color); background-color: var(--secondary-color); color: #fff; }
+    .step-text { display: block; font-size: 0.8rem; font-weight: 600; margin-top: 5px; text-align: center; color: #6c757d; }
+    .step-item.active .step-text { color: var(--primary-color); }
+    
+    /* Sanitización Visual Interactiva */
+    .force-uppercase { text-transform: uppercase; }
+    
+    .section-title {
+      font-size: 1.15rem; font-weight: 700; color: var(--primary-color);
+      border-bottom: 2px solid #e3e6ec; padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .form-label { font-weight: 600; font-size: 0.85rem; color: #495057; margin-bottom: 0.3rem; }
+    .form-control, .form-select {
+      border-radius: 6px; padding: 0.55rem 0.75rem; border: 1px solid var(--border-color);
+      font-size: 0.92rem; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.15);
+    }
+    
+    /* Mensajes de Advertencia e Instrucciones */
+    .corporate-notice {
+      background-color: #f4f7f9; border-left: 4px solid var(--secondary-color);
+      padding: 12px 16px; border-radius: 0 6px 6px 0; margin-top: 10px; font-size: 0.85rem; color: #3b434a;
+    }
+    .dynamic-card { background-color: #fdfdfd; border: 1px solid #e3e6ec; border-radius: 8px; padding: 20px; margin-bottom: 1.25rem; position: relative; }
+    .btn-remove-row { position: absolute; top: 12px; right: 12px; padding: 0.2rem 0.5rem; font-size: 0.8rem; }
+    
+    /* Validación dinámica sin interferencia */
+    .form-control.is-invalid, .form-select.is-invalid { border-color: #dc3545 !important; }
+    .invalid-feedback { font-size: 0.78rem; font-weight: 500; color: #dc3545; }
+  </style>
+</head>
+<body>
+
+<div class="container my-5" style="max-width: 1000px;" id="main-content">
+  <div class="text-center mb-5">
+    <h3 class="fw-bold" style="color: var(--primary-color);">FICHA DE REGISTRO DE PERSONAL</h3>
+    <div class="mx-auto" style="width: 60px; height: 3px; background-color: var(--secondary-color);"></div>
+    <p class="text-muted small">Módulo Corporativo Unificado de Captura de Información</p>
+  </div>
+
+  <div class="form-container p-4 p-md-5">
+    <ul class="step-indicator" id="stepper">
+      <li class="step-item active" id="step-1"><div class="step-btn">1</div><span class="step-text d-none d-sm-block">Personales</span></li>
+      <li class="step-item" id="step-2"><div class="step-btn">2</div><span class="step-text d-none d-sm-block">Domicilio</span></li>
+      <li class="step-item" id="step-3"><div class="step-btn">3</div><span class="step-text d-none d-sm-block">Familiares</span></li>
+      <li class="step-item" id="step-4"><div class="step-btn">4</div><span class="step-text d-none d-sm-block">Emergencias</span></li>
+      <li class="step-item" id="step-5"><div class="step-btn">5</div><span class="step-text d-none d-sm-block">Experiencia</span></li>
+    </ul>
+
+    <form id="formRegistro" novalidate>
+      
+      <div class="form-section" id="section-1">
+        <div class="section-title">1. Información de Identidad y Filiación</div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">DNI / C.E. / C.I *</label>
+            <input type="text" class="form-control" id="dni" required pattern="^[0-9]{8}$">
+            <div class="invalid-feedback">Requerido: Ingrese exactamente 8 dígitos numéricos.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Apellido Paterno *</label>
+            <input type="text" class="form-control force-uppercase" id="apePaterno" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Ingrese un apellido paterno válido (solo letras).</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Apellido Materno *</label>
+            <input type="text" class="form-control force-uppercase" id="apeMaterno" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Ingrese un apellido materno válido (solo letras).</div>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label">Nombres Completos *</label>
+            <input type="text" class="form-control force-uppercase" id="nombres" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Ingrese nombres válidos (solo letras).</div>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Sexo *</label>
+            <select class="form-select" id="sexo" required>
+              <option value="" selected disabled>Seleccione...</option>
+              <option value="M">MASCULINO (M)</option>
+              <option value="F">FEMENINO (F)</option>
+            </select>
+            <div class="invalid-feedback">Seleccione una opción.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Edad *</label>
+            <input type="number" class="form-control" id="edad" required min="18" max="85">
+            <div class="invalid-feedback">Debe ser mayor de edad (&ge; 18 años).</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Estado Civil *</label>
+            <select class="form-select" id="estadoCivil" required>
+              <option value="" selected disabled>Seleccione...</option>
+              <option value="SOLTERO">SOLTERO</option>
+              <option value="CASADO">CASADO</option>
+              <option value="DIVORCIADO">DIVORCIADO</option>
+              <option value="VIUDO">VIUDO</option>
+            </select>
+            <div class="invalid-feedback">Seleccione su estado civil actual.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Lugar de Nacimiento *</label>
+            <input type="text" class="form-control force-uppercase" id="lugarNacimiento" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Ingrese departamento/distrito de nacimiento.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fecha de Nacimiento *</label>
+            <input type="date" class="form-control" id="fechaNacimiento" required>
+            <div class="invalid-feedback">Seleccione una fecha válida.</div>
+          </div>
+        </div>
+
+        <div class="section-title mt-4">Fondo de Pensiones e Información Laboral</div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Profesión u Ocupación actual *</label>
+            <input type="text" class="form-control force-uppercase" id="ocupacion" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Especifique su ocupación.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">RUC (Si corresponde)</label>
+            <input type="text" class="form-control" id="ruc" pattern="^[0-9]{11}$">
+            <div class="invalid-feedback">El RUC debe constar de 11 dígitos numéricos.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Profesión / Especialidad</label>
+            <input type="text" class="form-control force-uppercase" id="profesion" pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Régimen Pensionario *</label>
+            <select class="form-select" id="afpOnp" required onchange="evaluarRegimenPensionario()">
+              <option value="" selected disabled>Seleccione régimen...</option>
+              <option value="AFP INTEGRA">AFP INTEGRA</option>
+              <option value="AFP PRIMA">AFP PRIMA</option>
+              <option value="AFP PROFUTURO">AFP PROFUTURO</option>
+              <option value="AFP HABITAT">AFP HABITAT</option>
+              <option value="ONP">ONP (SISTEMA NACIONAL)</option>
+              <option value="SIN AFILIACIÓN (POR DECIDIR)">SIN AFILIACIÓN (POR DECIDIR)</option>
+            </select>
+            <div class="invalid-feedback">Seleccione su fondo de pensión obligatorio.</div>
+          </div>
+          <div class="col-md-6" id="wrapper-pension">
+            <label class="form-label">Nro. de Afiliado (CUSPP / Nro. Pensión) *</label>
+            <input type="text" class="form-control force-uppercase" id="nroPension">
+            <div class="invalid-feedback">Este campo es mandatorio para afiliados.</div>
+          </div>
+          
+          <div class="col-12 d-none" id="notice-pension">
+            <div class="corporate-notice">
+              * <strong>Nota de Orientación Previsional:</strong> Usted ha marcado que no cuenta con un régimen previsional activo. Recuerde que dispone de un plazo máximo de 10 días hábiles para decidirse por una opción. Puede informarse y descargar los formatos obligatorios aquí: <a href="#" id="pension-link" target="_blank" class="fw-bold text-decoration-underline">Descargar Instructivo y Ficha de Elección</a>.
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Entidad Bancaria Financiera *</label>
+            <select class="form-select" id="banco" required onchange="evaluarEntidadBancaria()">
+              <option value="" selected disabled>Seleccione entidad bancaria...</option>
+              <option value="BCP (BANCO DE CREDITO DEL PERU)">BCP (BANCO DE CREDITO DEL PERU)</option>
+              <option value="INTERBANK">INTERBANK</option>
+              <option value="BBVA">BBVA</option>
+              <option value="SCOTIABANK">SCOTIABANK</option>
+              <option value="BANCO DE LA NACION">BANCO DE LA NACION</option>
+              <option value="OTRA ENTIDAD BANCARIA">OTRA ENTIDAD BANCARIA</option>
+            </select>
+            <div class="invalid-feedback">Seleccione su banco de abono.</div>
+          </div>
+          <div class="col-md-6 d-none" id="wrapper-otro-banco">
+            <label class="form-label">Especifique el Nombre de su Banco *</label>
+            <input type="text" class="form-control force-uppercase" id="bancoEspecificar" pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <div class="invalid-feedback">Escriba el nombre de la institución (solo letras).</div>
+          </div>
+          <div class="col-md-6" id="wrapper-cuenta-bancaria">
+            <label class="form-label" id="label-cuenta">Número de Cuenta Corriente / Ahorros BCP *</label>
+            <input type="text" class="form-control" id="cuentaBancaria" required>
+            <div class="invalid-feedback" id="feedback-cuenta">Ingrese un número de cuenta válido.</div>
+          </div>
+
+          <div class="col-12 d-none" id="notice-interbancario">
+            <div class="corporate-notice">
+              * <strong>Nota de Compensación Interbancaria:</strong> Los pagos dirigidos a entidades financieras distintas al BCP se procesan mediante transferencia interbancaria, lo cual implica un tiempo de compensación estimado de entre 24 y 48 horas hábiles.
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Teléfono Celular de Contacto *</label>
+            <input type="tel" class="form-control" id="telefono" required pattern="^[0-9]{9,11}$">
+            <div class="invalid-feedback">Ingrese un número de contacto válido (9 dígitos numéricos).</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Correo Electrónico Personal *</label>
+            <input type="email" class="form-control" id="correo" required>
+            <div class="invalid-feedback">Ingrese un correo electrónico válido (ejemplo@dominio.com).</div>
+          </div>
+        </div>
+        <div class="text-end mt-4">
+          <button type="button" class="btn btn-primary px-4" onclick="navegarPaso(1, 2)">Siguiente Paso ➔</button>
+        </div>
+      </div>
+
+      <div class="form-section d-none" id="section-2">
+        <div class="section-title">2. Dirección Domiciliaria Completa</div>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nombre de la Vía (Av. / Jr. / Calle / Psje) *</label>
+            <input type="text" class="form-control force-uppercase" id="nombreVia" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
+            <div class="invalid-feedback">Ingrese la dirección (Evite caracteres especiales como comillas o diagonales).</div>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">N° Casa</label>
+            <input type="text" class="form-control force-uppercase" id="nroCasa" pattern="^[A-Z0-9\s\-]+$">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Interior / Dpto</label>
+            <input type="text" class="form-control force-uppercase" id="interior" pattern="^[A-Z0-9\s\-]+$">
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">MZ</label>
+            <input type="text" class="form-control force-uppercase" id="mz" pattern="^[A-Z0-9]+$">
+          </div>
+          <div class="col-md-1">
+            <label class="form-label">LT.</label>
+            <input type="text" class="form-control force-uppercase" id="lt" pattern="^[A-Z0-9]+$">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Urbanización / Conjunto Residencial</label>
+            <input type="text" class="form-control force-uppercase" id="urbanizacion" pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Distrito *</label>
+            <input type="text" class="form-control force-uppercase" id="distrito" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Provincia *</label>
+            <input type="text" class="form-control force-uppercase" id="provincia" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Departamento *</label>
+            <input type="text" class="form-control force-uppercase" id="departamento" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Tipo de Vivienda *</label>
+            <select class="form-select" id="tipoVivienda" required>
+              <option value="" selected disabled>Seleccione condición...</option>
+              <option value="PROPIA">PROPIA</option>
+              <option value="ALQUILADA">ALQUILADA</option>
+              <option value="OTRO">OTRO (FAMILIAR / CEDIDA)</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Referencias Geográficas Claras de Ubicación *</label>
+            <textarea class="form-control force-uppercase" id="referencias" rows="2" required></textarea>
+            <div class="invalid-feedback">Describa una referencia sin comillas ni caracteres especiales.</div>
+          </div>
+          
+          <div class="col-md-12 mt-3">
+            <label class="form-label">Adjuntar Croquis o Imagen de Ubicación Domiciliaria (Formatos: JPG, PNG | Máx: 4MB) *</label>
+            <input type="file" class="form-control" id="croquisInput" accept="image/jpeg, image/png" required>
+            <div class="invalid-feedback">Debe adjuntar una imagen válida del croquis (menor a 4MB).</div>
+          </div>
+        </div>
+        <div class="text-end mt-4">
+          <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(2, 1)">⬅ Atrás</button>
+          <button type="button" class="btn btn-primary px-4" onclick="navegarPaso(2, 3)">Siguiente Paso ➔</button>
+        </div>
+      </div>
+
+      <div class="form-section d-none" id="section-3">
+        <div class="d-flex justify-content-between align-items-center section-title mb-3">
+          <span>3. Datos de Cónyuge e Hijos (Según sea el caso)</span>
+          <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="agregarFamiliarRow()">＋ Añadir Fila</button>
+        </div>
+        <p class="text-muted small mb-4">Si no posee carga familiar directa, puede omitir esta sección y continuar.</p>
+        <div id="contenedor-familiares"></div>
+        <div class="text-end mt-4">
+          <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(3, 2)">⬅ Atrás</button>
+          <button type="button" class="btn btn-primary px-4" onclick="navegarPaso(3, 4)">Siguiente Paso ➔</button>
+        </div>
+      </div>
+
+      <div class="form-section d-none" id="section-4">
+        <div class="d-flex justify-content-between align-items-center section-title mb-3">
+          <span>4. En Caso de Emergencia Llamar A: *</span>
+          <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="agregarEmergenciaRow()">＋ Añadir Contacto</button>
+        </div>
+        <p class="text-muted small mb-4">Debe registrar obligatoriamente al menos un (1) contacto de emergencia.</p>
+        <div id="contenedor-emergencias"></div>
+        <div class="text-end mt-4">
+          <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(4, 3)">⬅ Atrás</button>
+          <button type="button" class="btn btn-primary px-4" onclick="navegarPaso(4, 5)">Siguiente Paso ➔</button>
+        </div>
+      </div>
+
+      <div class="form-section d-none" id="section-5">
+        <div class="section-title">5. Formación Académica</div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label">Título Obtenido *</label>
+            <input type="text" class="form-control force-uppercase" id="titulo" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s]+$">
+            <div class="invalid-feedback">Especifique el título o grado.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Centro de Estudios *</label>
+            <input type="text" class="form-control force-uppercase" id="centro" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
+            <div class="invalid-feedback">Escriba el nombre de la institución.</div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Fecha de Culminación *</label>
+            <input type="date" class="form-control" id="culminacion" required>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center section-title mb-3">
+          <span>Experiencia Laboral (Últimos Empleos)</span>
+          <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="agregarExperienciaRow()">＋ Añadir Experiencia</button>
+        </div>
+        <div id="contenedor-experiencias"></div>
+
+        <div id="panel-interno-validacion" class="d-none">
+          <div class="section-title mt-4">Cierre y Validación de la Ficha Corporativa</div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Fecha de Ingreso *</label>
+              <input type="date" class="form-control" id="fechaIngresoDoc">
+              <div class="invalid-feedback">Establezca la fecha de ingreso acordada.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-end mt-5">
+          <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(5, 4)">⬅ Atrás</button>
+          <button type="submit" class="btn btn-success btn-lg px-5 fw-bold" id="btnEnviar">🚀 Finalizar e Indexar Registro</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="container my-5 text-center d-none" style="max-width: 600px;" id="success-screen">
+  <div class="form-container p-5">
+    <div class="display-1 text-success mb-4">✓</div>
+    <h3 class="fw-bold" style="color: var(--primary-color);">¡REGISTRO PROCESADO!</h3>
+    <p class="text-muted mt-3">Su Ficha de Registro de Personal ha sido transmitida e indexada de manera segura en los servidores centrales de la organización.</p>
+    <hr class="my-4">
+    <p class="small text-secondary">Agradecemos su tiempo. Ya puede cerrar esta ventana de forma segura.</p>
+  </div>
+</div>
+
+<script>
+  let esEntornoInterno = false;
+  let croquisBase64 = "";
+  let croquisNombre = "";
+  let croquisMime = "";
+
+  window.onload = function() {
+    evaluarEntorno();
+    agregarEmergenciaRow(); // Primer contacto obligatorio
+    configurarEscuchaErrores();
+    configurarMapeoCroquis();
+  };
+
+  /**
+   * CIBERSEGURIDAD: Identifica el host de ejecución para activar o desactivar campos administrativos
+   */
+  function evaluarEntorno() {
+    // Si la URL contiene google.com o script.google se asume entorno interno de Sheets
+    if (window.location.hostname.indexOf('google.com') !== -1 || window.location.hostname.indexOf('googleusercontent.com') !== -1) {
+      esEntornoInterno = true;
+      document.getElementById('panel-interno-validacion').classList.remove('d-none');
+      document.getElementById('fechaIngresoDoc').setAttribute('required', 'true');
+    }
+    
+    // Inyectar enlace instructivo desde backend remoto de configuración
+    if(typeof google !== 'undefined' && google.script) {
+       google.script.run.withSuccessHandler(url => {
+          document.getElementById('pension-link').href = url;
+       }).withFailureHandler(()=>{}).eval('CONFIG.LINK_INSTRUCTIVO_PENSION');
+    }
+  }
+
+  /**
+   * INTERACCIÓN REACTIVA: AFP/ONP condicionales
+   */
+  function evaluarRegimenPensionario() {
+    const val = document.getElementById('afpOnp').value;
+    const nro = document.getElementById('nroPension');
+    const notice = document.getElementById('notice-pension');
+    
+    if (val === "SIN AFILIACIÓN (POR DECIDIR)") {
+      document.getElementById('wrapper-pension').classList.add('d-none');
+      nro.removeAttribute('required');
+      nro.value = "";
+      notice.classList.remove('d-none');
+    } else {
+      document.getElementById('wrapper-pension').classList.remove('d-none');
+      nro.setAttribute('required', 'true');
+      notice.classList.add('d-none');
+    }
+  }
+
+  /**
+   * INTERACCIÓN REACTIVA: Entidades Bancarias y CCI Estricto de 20 dígitos
+   */
+  function evaluarEntidadBancaria() {
+    const banco = document.getElementById('banco').value;
+    const inputCuenta = document.getElementById('cuentaBancaria');
+    const wrapperEspecificar = document.getElementById('wrapper-otro-banco');
+    const inputEspecificar = document.getElementById('bancoEspecificar');
+    const noticeInterbancario = document.getElementById('notice-interbancario');
+    
+    if (banco === "BCP (BANCO DE CREDITO DEL PERU)") {
+      wrapperEspecificar.classList.add('d-none');
+      inputEspecificar.removeAttribute('required');
+      noticeInterbancario.classList.add('d-none');
+      
+      document.getElementById('label-cuenta').innerText = "Número de Cuenta Corriente / Ahorros BCP *";
+      inputCuenta.placeholder = "Ej: 193-XXXXXXXX-X-XX";
+      inputCuenta.setAttribute('pattern', '^[0-9\\-]+$');
+      document.getElementById('feedback-cuenta').innerText = "Ingrese un número de cuenta numérico válido.";
+    } else {
+      noticeInterbancario.classList.remove('d-none');
+      if (banco === "OTRA ENTIDAD BANCARIA") {
+        wrapperEspecificar.classList.remove('d-none');
+        inputEspecificar.setAttribute('required', 'true');
+      } else {
+        wrapperEspecificar.classList.add('d-none');
+        inputEspecificar.removeAttribute('required');
+      }
+      
+      document.getElementById('label-cuenta').innerText = "Código de Cuenta Interbancario (CCI) *";
+      inputCuenta.placeholder = "Debe contener exactamente 20 dígitos";
+      inputCuenta.setAttribute('pattern', '^[0-9]{20}$');
+      document.getElementById('feedback-cuenta').innerText = "El CCI debe constar de exactamente 20 dígitos numéricos correlativos.";
+    }
+  }
+
+  /**
+   * PROCESAMIENTO BINARIO INTEGRAL: Lee y encripta el Croquis en Base64 de forma local
+   */
+  function configurarMapeoCroquis() {
+    document.getElementById('croquisInput').addEventListener('change', function(e) {
+      const archivo = e.target.files[0];
+      if (!archivo) return;
+      
+      if (archivo.size > 4 * 1024 * 1024) {
+        alert("Archivo Excedido: La imagen supera el límite de seguridad de 4MB.");
+        this.value = "";
+        return;
+      }
+      
+      const lector = new FileReader();
+      lector.onload = function(evt) {
+        croquisBase64 = evt.target.result;
+        croquisNombre = archivo.name;
+        croquisMime = archivo.type;
+      };
+      lector.readAsDataURL(archivo);
+    });
+  }
+
+  function navegarPaso(pasoActual, pasoSiguiente) {
+    const seccionActual = document.getElementById('section-' + pasoActual);
+    if (pasoSiguiente > pasoActual) {
+      let valido = true;
+      seccionActual.querySelectorAll('input, select, textarea').forEach(el => {
+        if (el.hasAttribute('required') || el.value.trim() !== "") {
+          if (!el.checkValidity()) { valido = false; el.classList.add('is-invalid'); }
+          else { el.classList.remove('is-invalid'); }
+        }
+      });
+      if (!valido) {
+        alert('Acción Bloqueada: Corrija los campos marcados en rojo en esta sección.');
+        return;
+      }
+    }
+    seccionActual.classList.add('d-none');
+    document.getElementById('section-' + pasoSiguiente).classList.remove('d-none');
+    document.getElementById('step-' + pasoActual).classList.remove('active');
+    if (pasoSiguiente > pasoActual) document.getElementById('step-' + pasoActual).classList.add('completed');
+    document.getElementById('step-' + pasoSiguiente).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function configurarEscuchaErrores() {
+    document.getElementById('formRegistro').addEventListener('input', e => {
+      if (e.target.checkValidity()) e.target.classList.remove('is-invalid');
+    }, true);
+    document.getElementById('formRegistro').addEventListener('blur', e => {
+      if (!e.target.checkValidity()) e.target.classList.add('is-invalid');
+    }, true);
+  }
+
+  // --- COMPONENTES FILAS DINÁMICAS SANITIZADAS ---
+  function agregarFamiliarRow() {
+    const contenedor = document.getElementById('contenedor-familiares');
+    const div = document.createElement('div'); div.className = 'dynamic-card';
+    div.innerHTML = `
+      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>
+      <div class="row g-2 pt-2">
+        <div class="col-md-4"><label class="form-label">Apellidos y Nombres</label><input type="text" class="form-control force-uppercase fam-nombre" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-3"><label class="form-label">N° de Doc.</label><input type="text" class="form-control fam-doc" pattern="^[0-9]+$"></div>
+        <div class="col-md-3"><label class="form-label">Parentesco</label><input type="text" class="form-control force-uppercase fam-parentesco" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-2"><label class="form-label">Edad</label><input type="number" class="form-control fam-edad"></div>
+        <div class="col-md-3"><label class="form-label">Sexo</label><select class="form-select fam-sexo"><option value="">Seleccione...</option><option value="M">M</option><option value="F">F</option></select></div>
+        <div class="col-md-4"><label class="form-label">Fecha Nacimiento</label><input type="date" class="form-control fam-fecha"></div>
+        <div class="col-md-5"><label class="form-label">Domicilio Alternativo</label><input type="text" class="form-control force-uppercase fam-domicilio" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s]+$"></div>
+      </div>`;
+    contenedor.appendChild(div);
+  }
+
+  function agregarEmergenciaRow() {
+    const contenedor = document.getElementById('contenedor-emergencias');
+    const esPrimero = contenedor.children.length === 0;
+    const div = document.createElement('div'); div.className = 'dynamic-card';
+    div.innerHTML = `
+      ${!esPrimero ? '<button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>' : ''}
+      <div class="row g-2 pt-2">
+        <div class="col-md-5"><label class="form-label">Apellidos y Nombres *</label><input type="text" class="form-control force-uppercase emerg-nombre" ${esPrimero?'required':''} pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-3"><label class="form-label">Teléfono *</label><input type="tel" class="form-control emerg-telefono" ${esPrimero?'required':''} pattern="^[0-9]{9,11}$"></div>
+        <div class="col-md-4"><label class="form-label">Parentesco *</label><input type="text" class="form-control force-uppercase emerg-parentesco" ${esPrimero?'required':''} pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+      </div>`;
+    contenedor.appendChild(div);
+  }
+
+  function agregarExperienciaRow() {
+    const contenedor = document.getElementById('contenedor-experiencias');
+    const div = document.createElement('div'); div.className = 'dynamic-card';
+    div.innerHTML = `
+      <button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>
+      <div class="row g-2 pt-2">
+        <div class="col-md-4"><label class="form-label">Empresa / Organización</label><input type="text" class="form-control force-uppercase exp-empresa" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s\\.\\-]+$"></div>
+        <div class="col-md-4"><label class="form-label">Cargo</label><input type="text" class="form-control force-uppercase exp-cargo" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-4"><label class="form-label">Fecha de Ingreso</label><input type="date" class="form-control exp-ingreso"></div>
+        <div class="col-md-4"><label class="form-label">Motivo de Cese</label><input type="text" class="form-control force-uppercase exp-motivo" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-4"><label class="form-label">Fecha de Cese</label><input type="date" class="form-control exp-cese"></div>
+        <div class="col-md-4"><label class="form-label">Referencia Laboral</label><input type="text" class="form-control force-uppercase exp-referencia" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s\\-\\ ]+$"></div>
+      </div>`;
+    contenedor.appendChild(div);
+  }
+
+  // --- TRANSMISIÓN COMPLETA Y SEGURA (SUBMIT) ---
+  document.getElementById('formRegistro').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const seccionFinal = document.getElementById('section-5');
+    let valida = true;
+
+    seccionFinal.querySelectorAll('input, select, textarea').forEach(el => {
+      if (!el.checkValidity()) { valida = false; el.classList.add('is-invalid'); }
+    });
+
+    if (!valida) { alert('Formulario Incompleto: Revise los campos requeridos del último paso.'); return; }
+
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = true;
+    btn.innerHTML = 'Transmitiendo de Forma Segura...';
+
+    const dniPrincipal = document.getElementById('dni').value.trim();
+    const bancoSeleccionado = document.getElementById('banco').value;
+    const bancoFinal = (bancoSeleccionado === "OTRA ENTIDAD BANCARIA") ? document.getElementById('bancoEspecificar').value : bancoSeleccionado;
+
+    // CONSTRUCCIÓN DEL DATA-PAYLOAD
+    const payload = {
+      personal: {
+        dni: dniPrincipal,
+        apePaterno: document.getElementById('apePaterno').value,
+        apeMaterno: document.getElementById('apeMaterno').value,
+        nombres: document.getElementById('nombres').value,
+        edad: document.getElementById('edad').value,
+        sexo: document.getElementById('sexo').value,
+        estadoCivil: document.getElementById('estadoCivil').value,
+        lugarNacimiento: document.getElementById('lugarNacimiento').value,
+        fechaNacimiento: document.getElementById('fechaNacimiento').value,
+        ocupacion: document.getElementById('ocupacion').value,
+        ruc: document.getElementById('ruc').value,
+        profesion: document.getElementById('profesion').value,
+        afpOnp: document.getElementById('afpOnp').value,
+        nroPension: document.getElementById('nroPension').value,
+        banco: bancoFinal,
+        cuentaBancaria: document.getElementById('cuentaBancaria').value,
+        telefono: document.getElementById('telefono').value,
+        correo: document.getElementById('correo').value
+      },
+      domicilio: {
+        nombreVia: document.getElementById('nombreVia').value,
+        nroCasa: document.getElementById('nroCasa').value,
+        interior: document.getElementById('interior').value,
+        mz: document.getElementById('mz').value,
+        lt: document.getElementById('lt').value,
+        urbanizacion: document.getElementById('urbanizacion').value,
+        distrito: document.getElementById('distrito').value,
+        provincia: document.getElementById('provincia').value,
+        departamento: document.getElementById('departamento').value,
+        tipoVivienda: document.getElementById('tipoVivienda').value,
+        referencias: document.getElementById('referencias').value,
+        croquisBase64: croquisBase64,
+        croquisNombre: croquisNombre,
+        croquisMime: croquisMime
+      },
+      educacion: {
+        titulo: document.getElementById('titulo').value,
+        centro: document.getElementById('centro').value,
+        culminacion: document.getElementById('culminacion').value
+      },
+      documento: {
+        fechaIngresoDoc: document.getElementById('fechaIngresoDoc').value
+      },
+      familiares: [], emergencias: [], experiencias: []
+    };
+
+    // Serialización relacional de colecciones
+    document.querySelectorAll('#contenedor-familiares .dynamic-card').forEach(row => {
+      let nom = row.querySelector('.fam-nombre').value;
+      if (nom) {
+        payload.familiares.push({
+          nombreApellido: nom, doc: row.querySelector('.fam-doc').value,
+          parentesco: row.querySelector('.fam-parentesco').value, edad: row.querySelector('.fam-edad').value,
+          sexo: row.querySelector('.fam-sexo').value, fechaNacimiento: row.querySelector('.fam-fecha').value,
+          otroDomicilio: row.querySelector('.fam-domicilio').value
+        });
+      }
+    });
+
+    document.querySelectorAll('#contenedor-emergencias .dynamic-card').forEach(row => {
+      let nom = row.querySelector('.emerg-nombre').value;
+      if (nom) {
+        payload.emergencias.push({
+          nombre: nom, telefono: row.querySelector('.emerg-telefono').value,
+          parentesco: row.querySelector('.emerg-parentesco').value
+        });
+      }
+    });
+
+    document.querySelectorAll('#contenedor-experiencias .dynamic-card').forEach(row => {
+      let emp = row.querySelector('.exp-empresa').value;
+      if (emp) {
+        payload.experiencias.push({
+          empresa: emp, cargo: row.querySelector('.exp-cargo').value,
+          fechaIngreso: row.querySelector('.exp-ingreso').value, motivoCese: row.querySelector('.exp-motivo').value,
+          fechaCese: row.querySelector('.exp-cese').value, referencia: row.querySelector('.exp-referencia').value
+        });
+      }
+    });
+
+    // EJECUCIÓN DEL ENRUTADOR SEGURO SEGÚN EL ENTORNO
+    if (esEntornoInterno) {
+      google.script.run
+        .withSuccessHandler(function() {
+          alert('¡Éxito Interno!\nRegistro guardado correctamente.');
+          google.script.host.close();
+        })
+        .withFailureHandler(function(err) {
+          alert('Error de persistencia: ' + err.message);
+          btn.disabled = false; btn.innerHTML = '🚀 Finalizar e Indexar Registro';
+        })
+        .guardarFormularioRelacional(payload);
+    } else {
+      // Entorno GitHub Pages - Transmisión vía túnel API (doPost remoto)
+      const URL_API_APPSCROPT = "https://script.google.com/macros/s/AKfycbxYd0X29QYvzTm7Iw-gMFm4A9-_jDB6oo4eRjL39Gp7R_0wwae3-7F4mEnH6ld2xD0r/exec"; 
+      
+      fetch(URL_API_APPSCROPT, {
+        method: 'POST',
+        mode: 'no-cors', // Evita bloqueos de origen cruzado en GitHub gratuito
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        document.getElementById('main-content').classList.add('d-none');
+        document.getElementById('success-screen').classList.remove('d-none');
+        window.scrollTo(0, 0);
+      })
+      .catch(err => {
+        alert("Fallo de Transmisión Crítica de Red: " + err);
+        btn.disabled = false; btn.innerHTML = '🚀 Finalizar e Indexar Registro';
+      });
+    }
+  });
+</script>
+</body>
+</html>
