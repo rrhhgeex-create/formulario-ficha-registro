@@ -116,18 +116,18 @@
           </div>
           <div class="col-md-4">
             <label class="form-label">Apellido Paterno *</label>
-            <input type="text" class="form-control force-uppercase" id="apePaterno" required pattern="^[A-ZÁÉÍÓÚÑñ\s]+$">
-            <div class="invalid-feedback">Ingrese un apellido paterno válido (solo letras).</div>
+            <input type="text" class="form-control force-uppercase" id="apePaterno" required pattern="^[A-ZÁÉÍÓÚÑñ\s\-\.]+$">
+            <div class="invalid-feedback">Ingrese un apellido paterno válido (letras, espacios o guiones).</div>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Apellido Materno *</label>
-            <input type="text" class="form-control force-uppercase" id="apeMaterno" required pattern="^[A-ZÁÉÍÓÚÑñ\s]+$">
-            <div class="invalid-feedback">Ingrese un apellido materno válido (solo letras).</div>  
+            <label class="form-label">Apellido Paterno *</label>
+            <input type="text" class="form-control force-uppercase" id="apePaterno" required pattern="^[A-ZÁÉÍÓÚÑñ\s\-\.]+$">
+            <div class="invalid-feedback">Ingrese un apellido paterno válido (letras, espacios o guiones).</div>  
           </div>
           <div class="col-md-5">
             <label class="form-label">Nombres Completos *</label>
-            <input type="text" class="form-control force-uppercase" id="nombres" required pattern="^[A-ZÁÉÍÓÚÑñ\s]+$">
-            <div class="invalid-feedback">Ingrese nombres válidos (solo letras).</div>
+            <input type="text" class="form-control force-uppercase" id="nombres" required pattern="^[A-ZÁÉÍÓÚÑñ\s\-\.]+$">
+            <div class="invalid-feedback">Ingrese nombres válidos (letras, espacios o guiones).</div>
           </div>
           <div class="col-md-3">
             <label class="form-label">Sexo *</label>
@@ -156,7 +156,7 @@
           </div>
           <div class="col-md-4">
             <label class="form-label">Lugar de Nacimiento *</label>
-            <input type="text" class="form-control force-uppercase" id="lugarNacimiento" required pattern="^[A-ZÁÉÍÓÚÑñ\s\-\,]+$">
+            <input type="text" class="form-control force-uppercase" id="lugarNacimiento" required pattern="^[A-ZÁÉÍÓÚÑñ\s\-\,\.\/]+$">
             <div class="invalid-feedback">Ingrese departamento/distrito de nacimiento.</div>
           </div>
           <div class="col-md-4">
@@ -170,7 +170,7 @@
         <div class="row g-3">
           <div class="col-md-4">
             <label class="form-label">Profesión u Ocupación actual *</label>
-            <input type="text" class="form-control force-uppercase" id="ocupacion" required pattern="^[A-ZÁÉÍÓÚÑñ\s\.\-\/]+$">
+            <input type="text" class="form-control force-uppercase" id="ocupacion" required pattern="^[A-ZÁÉÍÓÚÑñ0-9\s\.\-\/]+$">
             <div class="invalid-feedback">Especifique su ocupación.</div>
           </div>
           <div class="col-md-4">
@@ -180,7 +180,7 @@
           </div>
           <div class="col-md-4">
             <label class="form-label">Profesión / Especialidad</label>
-            <input type="text" class="form-control force-uppercase" id="profesion" pattern="^[A-ZÁÉÍÓÚÑñ\s\.\-\/]+$">
+            <input type="text" class="form-control force-uppercase" id="profesion" pattern="^[A-ZÁÉÍÓÚÑñ0-9\s\.\-\/]+$">
           </div>
           <div class="col-md-6">
             <label class="form-label">Régimen Pensionario *</label>
@@ -222,8 +222,8 @@
           </div>
           <div class="col-md-6 d-none" id="wrapper-otro-banco">
             <label class="form-label">Especifique el Nombre de su Banco *</label>
-            <input type="text" class="form-control force-uppercase" id="bancoEspecificar" pattern="^[A-ZÁÉÍÓÚÑñ\s]+$">
-            <div class="invalid-feedback">Escriba el nombre de la institución (solo letras).</div>
+            <input type="text" class="form-control force-uppercase" id="bancoEspecificar">
+            <div class="invalid-feedback">Escriba el nombre de la institución financiera.</div>
           </div>
           <div class="col-md-6" id="wrapper-cuenta-bancaria">
             <label class="form-label" id="label-cuenta">Número de Cuenta Corriente / Ahorros BCP *</label>
