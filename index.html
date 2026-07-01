@@ -329,6 +329,7 @@
         </div>
       </div>
 
+      <!-- SECCIÓN 3: CÓNYUGE E HIJOS -->
       <div class="form-section d-none" id="section-3">
         <div class="d-flex justify-content-between align-items-center section-title mb-3">
           <span>3. Datos de Cónyuge e Hijos (Según sea el caso)</span>
@@ -342,12 +343,13 @@
         </div>
       </div>
 
+      <!-- SECCIÓN 4: EMERGENCIAS -->
       <div class="form-section d-none" id="section-4">
         <div class="d-flex justify-content-between align-items-center section-title mb-3">
           <span>4. En Caso de Emergencia Llamar A: *</span>
           <button type="button" class="btn btn-outline-primary btn-sm fw-bold" onclick="agregarEmergenciaRow()">＋ Añadir Contacto</button>
         </div>
-        <p class="text-muted small mb-4">Debe registrar obligatoriamente al menos un (1) contacto de emergencia.</p>
+        <p class="text-muted small mb-4">Debe registrar obligatoria y estrictamente al menos un (1) contacto de emergencia.</p>
         <div id="contenedor-emergencias"></div>
         <div class="text-end mt-4">
           <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(4, 3)">⬅ Atrás</button>
@@ -355,22 +357,24 @@
         </div>
       </div>
 
+      <!-- SECCIÓN 5: FORMACIÓN Y EXPERIENCIA -->
       <div class="form-section d-none" id="section-5">
         <div class="section-title">5. Formación Académica</div>
         <div class="row g-3 mb-4">
           <div class="col-md-6">
             <label class="form-label">Título Obtenido *</label>
-            <input type="text" class="form-control force-uppercase" id="titulo" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s]+$">
-            <div class="invalid-feedback">Especifique el título o grado.</div>
+            <input type="text" class="form-control force-uppercase" id="titulo" required>
+            <div class="invalid-feedback">Especifique el título o grado académico.</div>
           </div>
           <div class="col-md-6">
             <label class="form-label">Centro de Estudios *</label>
-            <input type="text" class="form-control force-uppercase" id="centro" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
-            <div class="invalid-feedback">Escriba el nombre de la institución.</div>
+            <input type="text" class="form-control force-uppercase" id="centro" required>
+            <div class="invalid-feedback">Escriba el nombre oficial de la institución.</div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Fecha de Culminación *</label>
             <input type="date" class="form-control" id="culminacion" required>
+            <div class="invalid-feedback">Seleccione una fecha válida.</div>
           </div>
         </div>
 
@@ -380,6 +384,7 @@
         </div>
         <div id="contenedor-experiencias"></div>
 
+        <!-- FILTRO DE SECCIÓN: DETECCIÓN DE ENTORNO EN TIEMPO DE EJECUCIÓN -->
         <div id="panel-interno-validacion" class="d-none">
           <div class="section-title mt-4">Cierre y Validación de la Ficha Corporativa</div>
           <div class="row g-3">
@@ -555,20 +560,20 @@
     }, true);
   }
 
-  // --- COMPONENTES FILAS DINÁMICAS SANITIZADAS ---
+  // --- COMPONENTES FILAS DINÁMICAS TOTALMENTE FLEXIBLES ---
   function agregarFamiliarRow() {
     const contenedor = document.getElementById('contenedor-familiares');
     const div = document.createElement('div'); div.className = 'dynamic-card';
     div.innerHTML = `
       <button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>
       <div class="row g-2 pt-2">
-        <div class="col-md-4"><label class="form-label">Apellidos y Nombres</label><input type="text" class="form-control force-uppercase fam-nombre" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
-        <div class="col-md-3"><label class="form-label">N° de Doc.</label><input type="text" class="form-control fam-doc" pattern="^[0-9]+$"></div>
-        <div class="col-md-3"><label class="form-label">Parentesco</label><input type="text" class="form-control force-uppercase fam-parentesco" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-4"><label class="form-label">Apellidos y Nombres</label><input type="text" class="form-control force-uppercase fam-nombre"></div>
+        <div class="col-md-3"><label class="form-label">N° de Doc.</label><input type="text" class="form-control fam-doc"></div>
+        <div class="col-md-3"><label class="form-label">Parentesco</label><input type="text" class="form-control force-uppercase fam-parentesco"></div>
         <div class="col-md-2"><label class="form-label">Edad</label><input type="number" class="form-control fam-edad"></div>
         <div class="col-md-3"><label class="form-label">Sexo</label><select class="form-select fam-sexo"><option value="">Seleccione...</option><option value="M">M</option><option value="F">F</option></select></div>
         <div class="col-md-4"><label class="form-label">Fecha Nacimiento</label><input type="date" class="form-control fam-fecha"></div>
-        <div class="col-md-5"><label class="form-label">Domicilio Alternativo</label><input type="text" class="form-control force-uppercase fam-domicilio" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s]+$"></div>
+        <div class="col-md-5"><label class="form-label">Domicilio Alternativo</label><input type="text" class="form-control force-uppercase fam-domicilio"></div>
       </div>`;
     contenedor.appendChild(div);
   }
@@ -580,9 +585,9 @@
     div.innerHTML = `
       ${!esPrimero ? '<button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>' : ''}
       <div class="row g-2 pt-2">
-        <div class="col-md-5"><label class="form-label">Apellidos y Nombres *</label><input type="text" class="form-control force-uppercase emerg-nombre" ${esPrimero?'required':''} pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
-        <div class="col-md-3"><label class="form-label">Teléfono *</label><input type="tel" class="form-control emerg-telefono" ${esPrimero?'required':''} pattern="^[0-9]{9,11}$"></div>
-        <div class="col-md-4"><label class="form-label">Parentesco *</label><input type="text" class="form-control force-uppercase emerg-parentesco" ${esPrimero?'required':''} pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-5"><label class="form-label">Apellidos y Nombres *</label><input type="text" class="form-control force-uppercase emerg-nombre" ${esPrimero?'required':''}></div>
+        <div class="col-md-3"><label class="form-label">Teléfono *</label><input type="tel" class="form-control emerg-telefono" ${esPrimero?'required':''}></div>
+        <div class="col-md-4"><label class="form-label">Parentesco *</label><input type="text" class="form-control force-uppercase emerg-parentesco" ${esPrimero?'required':''}></div>
       </div>`;
     contenedor.appendChild(div);
   }
@@ -593,12 +598,12 @@
     div.innerHTML = `
       <button type="button" class="btn btn-outline-danger btn-sm btn-remove-row" onclick="this.parentElement.remove()">✕ Quitar</button>
       <div class="row g-2 pt-2">
-        <div class="col-md-4"><label class="form-label">Empresa / Organización</label><input type="text" class="form-control force-uppercase exp-empresa" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s\\.\\-]+$"></div>
-        <div class="col-md-4"><label class="form-label">Cargo</label><input type="text" class="form-control force-uppercase exp-cargo" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-4"><label class="form-label">Empresa / Organización</label><input type="text" class="form-control force-uppercase exp-empresa"></div>
+        <div class="col-md-4"><label class="form-label">Cargo</label><input type="text" class="form-control force-uppercase exp-cargo"></div>
         <div class="col-md-4"><label class="form-label">Fecha de Ingreso</label><input type="date" class="form-control exp-ingreso"></div>
-        <div class="col-md-4"><label class="form-label">Motivo de Cese</label><input type="text" class="form-control force-uppercase exp-motivo" pattern="^[A-ZÁÉÍÓÚÑ\\s]+$"></div>
+        <div class="col-md-4"><label class="form-label">Motivo de Cese</label><input type="text" class="form-control force-uppercase exp-motivo"></div>
         <div class="col-md-4"><label class="form-label">Fecha de Cese</label><input type="date" class="form-control exp-cese"></div>
-        <div class="col-md-4"><label class="form-label">Referencia Laboral</label><input type="text" class="form-control force-uppercase exp-referencia" pattern="^[A-ZÁÉÍÓÚÑ0-9\\s\\-\\ ]+$"></div>
+        <div class="col-md-4"><label class="form-label">Referencia Laboral</label><input type="text" class="form-control force-uppercase exp-referencia"></div>
       </div>`;
     contenedor.appendChild(div);
   }
