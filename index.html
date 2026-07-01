@@ -259,40 +259,48 @@
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label">Nombre de la Vía (Av. / Jr. / Calle / Psje) *</label>
-            <input type="text" class="form-control force-uppercase" id="nombreVia" required pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
-            <div class="invalid-feedback">Ingrese la dirección (Evite caracteres especiales como comillas o diagonales).</div>
+            <input type="text" class="form-control force-uppercase" id="nombreVia" required>
+            <div class="invalid-feedback">Por favor, ingrese una dirección válida.</div>
           </div>
           <div class="col-md-2">
             <label class="form-label">N° Casa</label>
-            <input type="text" class="form-control force-uppercase" id="nroCasa" pattern="^[A-Z0-9\s\-]+$">
+            <input type="text" class="form-control force-uppercase" id="nroCasa">
+            <div class="invalid-feedback">Formato de numeración no válido.</div>
           </div>
           <div class="col-md-2">
             <label class="form-label">Interior / Dpto</label>
-            <input type="text" class="form-control force-uppercase" id="interior" pattern="^[A-Z0-9\s\-]+$">
+            <input type="text" class="form-control force-uppercase" id="interior">
+            <div class="invalid-feedback">Formato de interior no válido.</div>
           </div>
           <div class="col-md-1">
             <label class="form-label">MZ</label>
-            <input type="text" class="form-control force-uppercase" id="mz" pattern="^[A-Z0-9]+$">
+            <input type="text" class="form-control force-uppercase" id="mz">
+            <div class="invalid-feedback">Manzana no válida.</div>
           </div>
           <div class="col-md-1">
             <label class="form-label">LT.</label>
-            <input type="text" class="form-control force-uppercase" id="lt" pattern="^[A-Z0-9]+$">
+            <input type="text" class="form-control force-uppercase" id="lt">
+            <div class="invalid-feedback">Lote no válido.</div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Urbanización / Conjunto Residencial</label>
-            <input type="text" class="form-control force-uppercase" id="urbanizacion" pattern="^[A-ZÁÉÍÓÚÑ0-9\s\.\-]+$">
+            <input type="text" class="form-control force-uppercase" id="urbanizacion">
+            <div class="invalid-feedback">Por favor, verifique la información de la urbanización.</div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Distrito *</label>
-            <input type="text" class="form-control force-uppercase" id="distrito" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <input type="text" class="form-control force-uppercase" id="distrito" required>
+            <div class="invalid-feedback">Por favor, especifique su distrito de residencia.</div>
           </div>
           <div class="col-md-4">
             <label class="form-label">Provincia *</label>
-            <input type="text" class="form-control force-uppercase" id="provincia" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <input type="text" class="form-control force-uppercase" id="provincia" required>
+            <div class="invalid-feedback">Por favor, especifique su provincia.</div>
           </div>
           <div class="col-md-6">
             <label class="form-label">Departamento *</label>
-            <input type="text" class="form-control force-uppercase" id="departamento" required pattern="^[A-ZÁÉÍÓÚÑ\s]+$">
+            <input type="text" class="form-control force-uppercase" id="departamento" required>
+            <div class="invalid-feedback">Por favor, especifique su departamento.</div>
           </div>
           <div class="col-md-6">
             <label class="form-label">Tipo de Vivienda *</label>
@@ -306,7 +314,7 @@
           <div class="col-md-12">
             <label class="form-label">Referencias Geográficas Claras de Ubicación *</label>
             <textarea class="form-control force-uppercase" id="referencias" rows="2" required></textarea>
-            <div class="invalid-feedback">Describa una referencia sin comillas ni caracteres especiales.</div>
+            <div class="invalid-feedback">Por favor, proporcione una referencia clara de su ubicación.</div>
           </div>
           
           <div class="col-md-12 mt-3">
