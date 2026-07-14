@@ -395,7 +395,57 @@
             </div>
           </div>
         </div>
+<!-- ====================================================================================
+     BLOQUE NUEVO: DESCARGA DE DECLARACIÓN JURADA (DOMICILIO Y ANTECEDENTES)
+     Colocar exactamente antes del botón de finalizar/enviar (Sección 5)
+     ==================================================================================== -->
+<div class="card shadow-sm border-info mb-4">
+  <div class="card-body">
+    <div class="d-flex align-items-start">
+      <!-- Icono Profesional de Documento Seguro -->
+      <div class="me-3 text-info">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-check-fill" viewBox="0 0 16 16">
+          <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zm1.354 4.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 10.293l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+        </svg>
+      </div>
+      
+      <div>
+        <h5 class="card-title text-info fw-bold mb-1">DECLARACIÓN JURADA DE DOMICILIO Y ANTECEDENTES PENALES</h5>
+        <p class="card-text text-muted small mb-3">
+          Como parte de su proceso de incorporación, es un requisito obligatorio descargar, completar a mano con letra imprenta, firmar (y colocar huella dactilar, de ser requerido) la Declaración Jurada unificada de Domicilio y Antecedentes Penales.
+        </p>
+        
+        <!-- Instrucciones en un formato de pasos moderno -->
+        <div class="row g-2 mb-3 small">
+          <div class="col-md-4">
+            <div class="p-2 bg-light rounded border-start border-3 border-info">
+              <strong>1. Descargar y Guardar:</strong> Descargue el documento unificado en formato PDF en su dispositivo usando el botón de abajo.
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-2 bg-light rounded border-start border-3 border-info">
+              <strong>2. Imprimir y Llenar:</strong> Imprima el formato, rellene la información solicitada a mano y fírmelo de forma física.
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="p-2 bg-light rounded border-start border-3 border-info">
+              <strong>3. Enviar Firma:</strong> Remita el documento escaneado de manera clara al correo <strong class="text-dark">[CORREO_AQUÍ]</strong> o vía WhatsApp al número <strong class="text-dark">[CELULAR_AQUÍ]</strong>.
+            </div>
+          </div>
+        </div>
 
+        <!-- Botón de Descarga Estilizado (Apunta a tu Google Drive) -->
+        <a href="https://drive.google.com/drive/folders/1rz7UwH3lViKnfzBMKCe45heHtbD19I76" target="_blank" class="btn btn-outline-info btn-sm fw-bold px-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download me-1" viewBox="0 0 16 16">
+            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+          </svg>
+          Descargar Declaración Jurada Unificada (PDF)
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
         <div class="text-end mt-5">
           <button type="button" class="btn btn-outline-secondary me-2 px-4" onclick="navegarPaso(5, 4)">⬅ Atrás</button>
           <button type="submit" class="btn btn-success btn-lg px-5 fw-bold" id="btnEnviar">Finalizar e Indexar Registro</button>
